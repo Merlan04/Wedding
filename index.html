@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Свадебные сайты-приглашения · TC Digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --gold: #c9a96e; --gold-dim: #c9a96e55; --gold-faint: #c9a96e14;
+  --bg: #0d0b0e; --bg2: #141118; --border: #2a2630;
+  --text: #f0ece4; --text-dim: #6a6068; --text-muted: #3e3a48;
+  --serif: 'Cormorant Garamond', serif; --sans: 'Montserrat', sans-serif;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+
+/* ══ LOADER ══ */
+#loader { position:fixed; inset:0; background:var(--bg); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; transition:opacity .8s ease,transform .8s ease; }
+#loader.out { opacity:0; transform:scale(1.04); pointer-events:none; }
+.petals-container { position:absolute; inset:0; pointer-events:none; }
+.petal { position:absolute; opacity:0; animation:petalFall linear infinite; }
+@keyframes petalFall { 0%{opacity:0;transform:translateY(-20px) rotate(0deg) scale(.8);} 10%{opacity:.7;} 90%{opacity:.35;} 100%{opacity:0;transform:translateY(110vh) rotate(720deg) scale(1.1);} }
+.loader-center { position:relative; text-align:center; z-index:2; }
+.ring-wrap { width:140px; height:140px; margin:0 auto 2rem; position:relative; animation:spinRing 9s linear infinite; }
+.ring-text { position:absolute; inset:0; }
+.ring-text text { font-family:var(--sans); font-size:9px; letter-spacing:3.2px; fill:var(--gold); opacity:.55; text-transform:uppercase; }
+.ring-diamond { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:26px; height:26px; background:var(--gold); clip-path:polygon(50% 0%,100% 35%,80% 100%,20% 100%,0% 35%); animation:pulseDiamond 2s ease-in-out infinite; }
+@keyframes pulseDiamond { 0%,100%{transform:translate(-50%,-50%) scale(1);}50%{transform:translate(-50%,-50%) scale(1.18);} }
+@keyframes spinRing { to{transform:rotate(360deg);} }
+.loader-words { position:relative; height:52px; overflow:hidden; }
+.loader-word { position:absolute; left:0; right:0; font-family:var(--serif); font-size:clamp(1.8rem,5vw,2.8rem); font-weight:300; color:var(--text); letter-spacing:.05em; text-align:center; opacity:0; transform:translateY(30px); transition:opacity .45s ease,transform .45s ease; }
+.loader-word em { font-style:italic; color:var(--gold); }
+.loader-word.active { opacity:1; transform:translateY(0); }
+.loader-word.exit  { opacity:0; transform:translateY(-30px); }
+.loader-bar-wrap { width:180px; height:1px; background:#2a2630; margin:1.5rem auto .75rem; overflow:hidden; }
+.loader-bar { height:100%; background:linear-gradient(90deg,#c9a96e44,var(--gold),#c9a96e44); width:0%; transition:width .06s linear; }
+.loader-pct { font-family:var(--serif); font-size:11px; letter-spacing:.3em; color:var(--text-muted); }
+
+/* ══ MARQUEE ══ */
+.marquee-wrap { border-top:.5px solid #1e1b26; border-bottom:.5px solid #1e1b26; overflow:hidden; padding:9px 0; opacity:0; transition:opacity .6s ease; }
+.marquee-wrap.show { opacity:1; }
+.marquee-track { display:flex; width:max-content; animation:marquee 22s linear infinite; }
+.marquee-item { font-family:var(--serif); font-size:13px; font-style:italic; font-weight:300; color:#3a3548; letter-spacing:.1em; padding:0 1.2rem; white-space:nowrap; }
+.marquee-diamond { color:var(--gold); font-style:normal; font-size:8px; opacity:.5; padding:0 .3rem; }
+@keyframes marquee { from{transform:translateX(0);}to{transform:translateX(-50%);} }
+
+/* ══ HEADER ══ */
+.hdr { text-align:center; padding:4.5rem 1.5rem 1rem; opacity:0; transform:translateY(28px); transition:opacity .8s ease,transform .8s ease; }
+.hdr.show { opacity:1; transform:translateY(0); }
+.hdr-eye { font-size:8px; letter-spacing:.55em; color:var(--gold); text-transform:uppercase; margin-bottom:1rem; }
+.hdr h1 { font-family:var(--serif); font-size:clamp(2.2rem,7vw,4rem); font-weight:300; line-height:1.1; letter-spacing:.03em; }
+.hdr h1 em { font-style:italic; color:var(--gold); }
+.hdr-div { width:50px; height:1px; background:var(--gold-dim); margin:1.5rem auto 1rem; }
+.hdr-sub { font-size:9px; letter-spacing:.22em; color:var(--text-muted); text-transform:uppercase; }
+
+/* ══ ROTATING STRIP ══ */
+.rotating-strip { position:relative; height:64px; overflow:hidden; margin:2.5rem 0; opacity:0; transition:opacity .7s .3s ease; }
+.rotating-strip.show { opacity:1; }
+.rotating-line { display:flex; align-items:center; white-space:nowrap; position:absolute; left:0; line-height:1; }
+.rotating-line.top    { top:4px;    animation:scrollLeft  18s linear infinite; }
+.rotating-line.bottom { bottom:4px; animation:scrollRight 18s linear infinite; }
+.rot-word { font-family:var(--serif); font-size:2.2rem; font-weight:300; color:#1e1b26; text-transform:uppercase; letter-spacing:.08em; padding:0 1.5rem; transition:color .3s; }
+.rot-word:hover { color:var(--gold); }
+.rot-word.accent { font-style:italic; color:#2a2434; }
+.rot-sep { color:var(--gold); font-size:1rem; opacity:.4; padding:0 .5rem; }
+@keyframes scrollLeft  { from{transform:translateX(0);}    to{transform:translateX(-50%);} }
+@keyframes scrollRight { from{transform:translateX(-50%);} to{transform:translateX(0);} }
+
+/* ══ SECTION PILLS ══ */
+.sec-nav { display:flex; justify-content:center; gap:8px; flex-wrap:wrap; padding:0 1.5rem; margin-bottom:3.5rem; opacity:0; transform:translateY(18px); transition:opacity .7s .15s ease,transform .7s .15s ease; }
+.sec-nav.show { opacity:1; transform:translateY(0); }
+.sec-pill { display:flex; flex-direction:column; align-items:center; gap:4px; padding:14px 32px; border:.5px solid var(--border); border-radius:4px; background:var(--bg2); cursor:pointer; transition:border-color .3s,background .3s,transform .25s; }
+.sec-pill:hover { border-color:var(--gold-dim); transform:translateY(-3px); }
+.sec-pill.active { border-color:var(--gold); background:var(--gold-faint); }
+.sec-pill-num  { font-size:7px; letter-spacing:.4em; color:var(--text-muted); text-transform:uppercase; }
+.sec-pill-name { font-family:var(--serif); font-size:1.1rem; font-weight:300; color:var(--text); }
+.sec-pill.active .sec-pill-name { color:var(--gold); }
+.sec-pill-price { font-size:8px; letter-spacing:.1em; color:var(--text-muted); }
+.sec-pill.active .sec-pill-price { color:var(--gold); opacity:.7; }
+
+/* ══ SECTIONS ══ */
+.section { max-width:1160px; margin:0 auto; padding:0 1.5rem 5rem; display:none; }
+.section.active { display:block; }
+.sec-head { text-align:center; margin-bottom:3rem; opacity:0; transform:translateY(20px); transition:opacity .6s ease,transform .6s ease; }
+.sec-head.show { opacity:1; transform:translateY(0); }
+.sec-tag   { font-size:7px; letter-spacing:.45em; color:var(--gold); text-transform:uppercase; margin-bottom:.5rem; }
+.sec-title { font-family:var(--serif); font-size:clamp(1.6rem,4vw,2.4rem); font-weight:300; color:var(--text); }
+.sec-title em { color:var(--gold); font-style:italic; }
+.sec-line  { width:40px; height:1px; background:var(--gold-dim); margin:.8rem auto; }
+.sec-sub   { font-size:9px; color:var(--text-muted); letter-spacing:.15em; text-transform:uppercase; }
+
+/* ══ GRID ══ */
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1.4rem; }
+
+/* ══ CARD ══ */
+.card { background:var(--bg2); border:.5px solid var(--border); border-radius:6px; overflow:hidden; text-decoration:none; display:flex; flex-direction:column; position:relative; cursor:pointer; opacity:0; transform:translateY(30px); transition:transform .35s ease,border-color .35s ease,opacity .5s ease; will-change:transform; }
+.card.vis { opacity:1; transform:translateY(0); }
+.card:hover { transform:translateY(-8px) !important; border-color:var(--gold-dim); }
+.card::after { content:''; position:absolute; inset:0; background:linear-gradient(135deg,#c9a96e08 0%,transparent 60%); opacity:0; transition:opacity .3s; pointer-events:none; }
+.card:hover::after { opacity:1; }
+.cbadge { position:absolute; top:10px; right:10px; font-size:7px; letter-spacing:.18em; text-transform:uppercase; padding:3px 8px; border-radius:2px; font-weight:500; z-index:2; }
+.b-std  { background:#2a2218; color:var(--gold);  border:.5px solid #c9a96e44; }
+.b-prem { background:#1c1a28; color:#a89bda;      border:.5px solid #a89bda44; }
+.b-alt  { background:#1a2020; color:#7ec8a4;      border:.5px solid #7ec8a444; }
+.b-ros  { background:#281818; color:#e0826a;      border:.5px solid #e0826a44; }
+.prev { width:100%; height:220px; position:relative; overflow:hidden; flex-shrink:0; }
+
+/* ══ PREVIEW STYLES ══ */
+
+/* Базовый 1 — premium9: тёмный сейв дейт с ромбами */
+.pv9 { background:#0e0c10; display:flex; align-items:center; justify-content:center; position:relative; }
+.pv9-bg { position:absolute; font-family:var(--serif); font-size:100px; font-weight:600; color:#c9a96e05; top:50%; left:50%; transform:translate(-50%,-50%); white-space:nowrap; }
+.pv9-vl { position:absolute; left:50%; transform:translateX(-50%); width:1px; background:#c9a96e1a; }
+.pv9-vl.t{top:0;height:44px;} .pv9-vl.b{bottom:0;height:44px;}
+.pv9-i { position:relative; text-align:center; padding:1.2rem; }
+.pv9-eye { font-size:7px; letter-spacing:.4em; color:#c9a96e55; text-transform:uppercase; margin-bottom:.35rem; }
+.pv9-dmd { width:5px; height:5px; background:var(--gold); transform:rotate(45deg); margin:.5rem auto; display:block; opacity:.8; }
+.pv9-nm  { font-family:var(--serif); font-size:22px; font-weight:300; color:#e8d9b8; line-height:1.1; }
+.pv9-am  { font-style:italic; color:var(--gold); }
+.pv9-dt  { font-size:7px; letter-spacing:.2em; color:#4a4438; text-transform:uppercase; margin-top:.35rem; }
+
+/* Базовый 2 — premium8: тёмный с ромбом и радиальным светом */
+.pv8 { background:#0d0d0b; display:flex; align-items:center; justify-content:center; position:relative; }
+.pv8::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 60% 30%,#c9a96e0b 0%,transparent 65%); }
+.pv8-i { position:relative; text-align:center; }
+.pv8-top  { font-size:7px; letter-spacing:.4em; color:var(--gold); text-transform:uppercase; margin-bottom:.6rem; opacity:.65; }
+.pv8-nm   { font-family:var(--serif); font-size:22px; font-weight:300; color:#e8e0c8; line-height:1.15; }
+.pv8-am   { font-style:italic; color:var(--gold); }
+.pv8-line { width:36px; height:1px; background:#c9a96e44; margin:.5rem auto; }
+.pv8-sub  { font-size:7px; letter-spacing:.2em; color:#4a4438; text-transform:uppercase; }
+.pv8-dmd  { width:6px; height:6px; background:var(--gold); transform:rotate(45deg); margin:.5rem auto; display:block; opacity:.4; }
+
+/* Базовый 3 — premium: тёмный с концентрическими кругами */
+.pvp { background:#1a1624; display:flex; align-items:flex-end; position:relative; }
+.pvp-c1 { position:absolute; top:-50px; right:-50px; width:200px; height:200px; border-radius:50%; border:1px solid #c9a96e18; }
+.pvp-c2 { position:absolute; top:-28px; right:-28px; width:150px; height:150px; border-radius:50%; border:1px solid #c9a96e28; }
+.pvp-i  { padding:1.5rem; position:relative; z-index:2; }
+.pvp-bar { width:2px; height:32px; background:var(--gold); margin-bottom:.6rem; }
+.pvp-tag { font-size:7px; letter-spacing:.35em; color:var(--gold); text-transform:uppercase; margin-bottom:.75rem; }
+.pvp-nm  { font-family:var(--serif); font-size:22px; font-weight:300; color:var(--text); line-height:1.1; }
+.pvp-am  { color:var(--gold); font-style:italic; }
+.pvp-dt  { font-size:7px; letter-spacing:.15em; color:#4a4458; margin-top:.8rem; text-transform:uppercase; }
+
+/* Базовый 4 — premium7: светлый с программой */
+.pv7 { background:#f5f2ee; display:flex; align-items:center; justify-content:center; position:relative; }
+.pv7::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,transparent,#c9a96e,transparent); }
+.pv7-i   { text-align:center; padding:1.2rem; }
+.pv7-tag { font-size:7px; letter-spacing:.38em; color:#9a8060; text-transform:uppercase; margin-bottom:.5rem; }
+.pv7-nm  { font-family:var(--serif); font-size:22px; font-weight:300; color:#2c2318; line-height:1.15; }
+.pv7-am  { font-style:italic; color:var(--gold); }
+.pv7-ln  { width:36px; height:1px; background:#c9a96e66; margin:.5rem auto; }
+.pv7-dt  { font-size:7px; letter-spacing:.18em; color:#9a8060; text-transform:uppercase; }
+.pv7-prog { display:flex; gap:5px; justify-content:center; margin-top:.65rem; }
+.pv7-step { font-size:7px; padding:2px 7px; border:.5px solid #c9a96e44; color:#9a8060; border-radius:2px; letter-spacing:.04em; }
+
+/* Базовый 5 — premium2: тёмный элит с "Love" */
+.pv2 { background:#10100e; display:flex; align-items:center; justify-content:center; position:relative; }
+.pv2-bg  { position:absolute; font-family:var(--serif); font-size:80px; font-weight:600; color:#c9a96e07; top:50%; left:50%; transform:translate(-50%,-50%); white-space:nowrap; }
+.pv2-vl  { position:absolute; left:50%; transform:translateX(-50%); width:1px; background:#c9a96e22; }
+.pv2-vl.t{top:0;height:40px;} .pv2-vl.b{bottom:0;height:40px;}
+.pv2-i   { position:relative; text-align:center; padding:1.2rem; }
+.pv2-eye { font-size:7px; letter-spacing:.35em; color:#c9a96e66; text-transform:uppercase; margin-bottom:.3rem; }
+.pv2-dmd { width:5px; height:5px; background:var(--gold); transform:rotate(45deg); margin:.5rem auto; display:block; }
+.pv2-nm  { font-family:var(--serif); font-size:21px; font-weight:300; color:#e8d9b8; line-height:1.15; }
+.pv2-am  { font-style:italic; color:var(--gold); }
+.pv2-dt  { font-size:7px; letter-spacing:.2em; color:#4a4438; text-transform:uppercase; margin-top:.3rem; }
+
+/* Базовый 6 — Wedding-card: классик светлый в рамке */
+.pv1 { background:#f5f0e8; display:flex; align-items:center; justify-content:center; }
+.pv1b { margin:1.2rem; width:calc(100% - 2.4rem); height:calc(100% - 2.4rem); border:1px solid #c9a96e44; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.35rem; position:relative; }
+.pv1b::before,.pv1b::after { content:''; position:absolute; width:10px; height:10px; border-color:#c9a96e; border-style:solid; }
+.pv1b::before { top:-1px; left:-1px; border-width:1px 0 0 1px; }
+.pv1b::after  { bottom:-1px; right:-1px; border-width:0 1px 1px 0; }
+.pv1-ln { width:32px; height:1px; background:#c9a96e55; }
+.pv1-sm { font-size:7px; letter-spacing:.3em; color:#9a8060; text-transform:uppercase; }
+.pv1-nm { font-family:var(--serif); font-size:20px; font-weight:300; color:#2c2318; text-align:center; line-height:1.2; }
+.pv1-am { font-style:italic; color:var(--gold); }
+.pv1-dt { font-size:7px; letter-spacing:.18em; color:#9a8060; text-transform:uppercase; }
+
+/* Базовый 7 — premium3: ультра светлый с золотой полосой */
+.pv3 { background:#f7f3ec; display:flex; align-items:stretch; }
+.pv3l { width:36%; background:var(--gold); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.4rem; padding:.6rem; }
+.pv3l-yr { font-family:var(--serif); font-size:34px; font-weight:300; color:#2c2318; line-height:1; }
+.pv3l-mo { font-size:7px; letter-spacing:.28em; color:#2c231877; text-transform:uppercase; }
+.pv3r { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.4rem; padding:1rem; }
+.pv3-sm  { font-size:7px; letter-spacing:.32em; color:#9a8060; text-transform:uppercase; }
+.pv3-nm  { font-family:var(--serif); font-size:16px; font-weight:300; color:#2c2318; text-align:center; line-height:1.2; }
+.pv3-am  { font-style:italic; color:#9a6e2a; }
+.pv3-ln  { width:26px; height:1px; background:#c9a96e88; }
+.pv3-pl  { font-size:7px; letter-spacing:.1em; color:#9a8060; text-align:center; }
+.pv3dot  { width:4px; height:4px; border-radius:50%; background:#c9a96e77; }
+
+/* Премиум 1 — premium10: восточный никах */
+.pv10 { background:#100e08; display:flex; align-items:center; justify-content:center; position:relative; }
+.pv10::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 50% 50%,#c9a96e0d 0%,transparent 70%); }
+.pv10-i   { position:relative; text-align:center; padding:1.2rem; }
+.pv10-ar  { font-size:26px; color:#c9a96e33; margin-bottom:.3rem; }
+.pv10-tag { font-size:7px; letter-spacing:.4em; color:var(--gold); text-transform:uppercase; margin-bottom:.5rem; opacity:.7; }
+.pv10-geo { width:36px; height:36px; border:1px solid #c9a96e22; transform:rotate(45deg); margin:.4rem auto; }
+.pv10-nm  { font-family:var(--serif); font-size:21px; font-weight:300; color:#e8d4a8; line-height:1.15; }
+.pv10-am  { font-style:italic; color:var(--gold); }
+.pv10-dt  { font-size:7px; letter-spacing:.25em; color:#5a5040; text-transform:uppercase; margin-top:.5rem; }
+
+/* Премиум 2 — premium6: тёмный с ромбом А&А */
+.pv6 { background:#0f0d14; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+.pv6::before { content:'А & А'; position:absolute; font-family:var(--serif); font-size:80px; font-weight:600; color:#c9a96e06; top:50%; left:50%; transform:translate(-50%,-50%); white-space:nowrap; }
+.pv6::after  { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+.pv6-i  { position:relative; text-align:center; padding:1.5rem; }
+.pv6-dmd { width:5px; height:5px; background:var(--gold); transform:rotate(45deg); margin:0 auto .6rem; display:block; }
+.pv6-top { font-size:7px; letter-spacing:.45em; color:var(--gold); text-transform:uppercase; opacity:.65; margin-bottom:.5rem; }
+.pv6-nm  { font-family:var(--serif); font-size:22px; font-weight:300; color:#f0e8d8; line-height:1.1; }
+.pv6-am  { font-style:italic; color:var(--gold); }
+.pv6-ln  { width:40px; height:1px; background:#c9a96e44; margin:.5rem auto; }
+.pv6-dt  { font-size:7px; letter-spacing:.22em; color:#4a4030; text-transform:uppercase; }
+
+/* Премиум 3 — premium5: сиреневый 4 страницы */
+.pv5 { background:#1c1826; display:flex; align-items:center; justify-content:center; position:relative; }
+.pv5-bg { position:absolute; font-family:var(--serif); font-size:64px; font-weight:600; font-style:italic; color:#a89bda0a; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-12deg); white-space:nowrap; }
+.pv5-i  { position:relative; text-align:center; padding:1.5rem; }
+.pv5-tag { font-size:7px; letter-spacing:.4em; color:#a89bda88; text-transform:uppercase; margin-bottom:.6rem; }
+.pv5-nm  { font-family:var(--serif); font-size:22px; font-weight:300; color:#e8e0f4; line-height:1.1; }
+.pv5-am  { font-style:italic; color:#a89bda; }
+.pv5-sep { width:28px; height:1px; background:#a89bda44; margin:.5rem auto; }
+.pv5-dt  { font-size:7px; letter-spacing:.2em; color:#5a5468; text-transform:uppercase; }
+.pv5-pages { display:flex; gap:4px; justify-content:center; margin-top:.5rem; }
+.pv5-pg { width:18px; height:2px; border-radius:1px; background:#a89bda25; }
+.pv5-pg.on { background:#a89bda88; }
+
+/* ══ CARD BODY ══ */
+.cbody { padding:1rem 1.1rem; flex:1; display:flex; flex-direction:column; gap:.65rem; }
+.ctop  { display:flex; align-items:flex-start; justify-content:space-between; gap:.5rem; }
+.ctitle { font-size:12px; font-weight:500; color:var(--text); }
+.csub   { font-size:8px; color:#4a4458; letter-spacing:.1em; text-transform:uppercase; margin-top:2px; }
+.cprice { font-family:var(--serif); font-size:20px; color:var(--gold); white-space:nowrap; line-height:1; }
+.cprice span { font-size:9px; font-family:var(--sans); color:var(--text-dim); margin-left:1px; }
+.chips  { display:flex; flex-wrap:wrap; gap:3px; }
+.chip   { font-size:7px; letter-spacing:.06em; text-transform:uppercase; padding:2px 6px; border-radius:2px; background:#1e1b26; border:.5px solid #2e2a38; color:#7a7088; }
+.chip.on{ background:#c9a96e0e; border-color:#c9a96e24; color:#c9a96e88; }
+.sep    { height:.5px; background:#1e1b26; }
+.cta-row { display:flex; align-items:center; justify-content:space-between; }
+.cta-btn { font-size:8px; letter-spacing:.15em; text-transform:uppercase; color:var(--gold); border:.5px solid var(--gold-dim); padding:6px 12px; border-radius:2px; text-decoration:none; transition:background .2s,color .2s; display:inline-block; }
+.cta-btn:hover { background:var(--gold); color:var(--bg2); }
+.cpages { font-size:8px; color:var(--text-muted); letter-spacing:.08em; }
+
+/* ══ LUXE ══ */
+.luxe-wrap { border:.5px solid var(--border); border-radius:6px; background:var(--bg2); background-image:radial-gradient(#c9a96e10 1px,transparent 1px); background-size:26px 26px; padding:4rem 2rem; text-align:center; opacity:0; transform:translateY(24px); transition:opacity .7s ease,transform .7s ease; }
+.luxe-wrap.show { opacity:1; transform:translateY(0); }
+.luxe-dots { display:flex; gap:8px; justify-content:center; margin-bottom:.75rem; }
+.luxe-dot { width:6px; height:6px; border-radius:50%; background:var(--gold); opacity:.25; animation:dotPulse 2s infinite; }
+.luxe-dot:nth-child(2){animation-delay:.4s;} .luxe-dot:nth-child(3){animation-delay:.8s;}
+@keyframes dotPulse{0%,100%{opacity:.25;}50%{opacity:.9;}}
+.luxe-tag   { font-size:7px; letter-spacing:.45em; color:var(--gold); text-transform:uppercase; margin-bottom:.75rem; opacity:.8; }
+.luxe-title { font-family:var(--serif); font-size:clamp(1.6rem,4.5vw,2.6rem); font-weight:300; color:var(--text); margin-bottom:.5rem; }
+.luxe-title em { font-style:italic; color:var(--gold); }
+.luxe-line  { width:40px; height:1px; background:var(--gold-dim); margin:1rem auto; }
+.luxe-desc  { font-size:10px; color:#4a4458; letter-spacing:.1em; max-width:420px; margin:0 auto 2rem; line-height:1.9; }
+.luxe-features { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:1rem; max-width:720px; margin:0 auto; }
+.luxe-feat { border:.5px solid #2a2630; border-radius:4px; padding:1.2rem 1rem; text-align:center; transition:border-color .3s; }
+.luxe-feat:hover { border-color:var(--gold-dim); }
+.luxe-feat-icon { font-size:18px; margin-bottom:.5rem; }
+.luxe-feat-name { font-size:9px; letter-spacing:.12em; text-transform:uppercase; color:var(--text); margin-bottom:3px; }
+.luxe-feat-sub  { font-size:8px; color:var(--text-muted); letter-spacing:.06em; }
+
+/* ══ TELEGRAM ══ */
+.tg-section { max-width:1160px; margin:0 auto; padding:0 1.5rem; opacity:0; transform:translateY(20px); transition:opacity .7s ease,transform .7s ease; }
+.tg-section.show { opacity:1; transform:translateY(0); }
+.tg-card { background:var(--bg2); border:.5px solid var(--border); border-radius:6px; padding:2rem; display:flex; align-items:center; justify-content:space-between; gap:1.5rem; flex-wrap:wrap; }
+.tg-eyebrow { font-size:8px; letter-spacing:.35em; text-transform:uppercase; color:var(--text-dim); margin-bottom:.5rem; }
+.tg-title   { font-family:var(--serif); font-size:1.5rem; font-weight:300; }
+.tg-title em { font-style:italic; color:var(--gold); }
+.tg-hint    { font-size:10px; color:#4a4458; margin-top:.4rem; }
+.tg-btn { display:inline-flex; align-items:center; gap:10px; background:var(--gold); color:#1a1620; font-family:var(--sans); font-size:11px; font-weight:600; letter-spacing:.15em; text-transform:uppercase; padding:13px 24px; border-radius:3px; text-decoration:none; transition:background .2s,transform .15s; white-space:nowrap; }
+.tg-btn:hover { background:#dbb97e; transform:translateY(-2px); }
+.tg-icon { width:18px; height:18px; flex-shrink:0; }
+
+/* ══ FOOTER ══ */
+footer { max-width:1160px; margin:2.5rem auto 0; padding:1.75rem 1.5rem 2.5rem; border-top:.5px solid #1e1b26; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; opacity:0; transition:opacity .7s ease; }
+footer.show { opacity:1; }
+.foot-brand { font-family:var(--serif); font-size:1.1rem; font-weight:300; }
+.foot-brand em { font-style:italic; color:var(--gold); }
+.foot-links { display:flex; gap:1.5rem; }
+.foot-link  { font-size:9px; letter-spacing:.15em; text-transform:uppercase; color:var(--text-muted); text-decoration:none; transition:color .2s; }
+.foot-link:hover { color:var(--gold); }
+.foot-copy  { font-size:8px; color:#2e2a38; letter-spacing:.1em; text-transform:uppercase; width:100%; }
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:768px){
+  .hdr{padding:3rem 1rem 1rem;}
+  .grid{grid-template-columns:1fr;gap:1rem;}
+  .prev{height:190px;}
+  .sec-nav{gap:6px;}
+  .sec-pill{padding:10px 18px;}
+  .rotating-strip{height:52px;}
+  .rot-word{font-size:1.8rem;}
+  .tg-card{flex-direction:column;align-items:flex-start;}
+  .tg-btn{width:100%;justify-content:center;}
+  .luxe-features{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:420px){ .section{padding:0 1rem 4rem;} .luxe-features{grid-template-columns:1fr;} }
+@media(hover:none){ .card:hover{transform:translateY(-4px) !important;} }
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="petals-container" id="petals"></div>
+  <div class="loader-center">
+    <div class="ring-wrap">
+      <svg class="ring-text" viewBox="0 0 140 140">
+        <defs><path id="cp" d="M 70,70 m -52,0 a 52,52 0 1,1 104,0 a 52,52 0 1,1 -104,0"/></defs>
+        <text><textPath href="#cp">TC DIGITAL · ТАШКЕНТ · СВАДЕБНЫЕ САЙТЫ · WEDDING ·</textPath></text>
+      </svg>
+      <div class="ring-diamond"></div>
+    </div>
+    <div class="loader-words">
+      <div class="loader-word active" id="lw0"><em>Любовь</em></div>
+      <div class="loader-word" id="lw1"><em>Счастье</em></div>
+      <div class="loader-word" id="lw2"><em>Свадьба</em></div>
+      <div class="loader-word" id="lw3"><em>Навсегда</em></div>
+    </div>
+    <div class="loader-bar-wrap"><div class="loader-bar" id="loaderBar"></div></div>
+    <div class="loader-pct" id="loaderPct">0</div>
+  </div>
+</div>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap" id="marquee">
+  <div class="marquee-track">
+    <span class="marquee-item">Свадебные сайты-приглашения</span><span class="marquee-diamond">◆</span>
+    <span class="marquee-item">Wedding Invitations</span><span class="marquee-diamond">◆</span>
+    <span class="marquee-item">TC Digital · Ташкент</span><span class="marquee-diamond">◆</span>
+    <span class="marquee-item">10 шаблонов</span><span class="marquee-diamond">◆</span>
+    <span class="marquee-item">Базовый · Премиум · Люкс</span><span class="marquee-diamond">◆</span>
+    <span class="marquee-item">Свадебные сайты-приглашения</span><span class="marquee-diamond">◆</span>
+    <span class="marquee-item">Wedding Invitations</span><span class="marquee-diamond">◆</span>
+    <span class="marquee-item">TC Digital · Ташкент</span><span class="marquee-diamond">◆</span>
+    <span class="marquee-item">10 шаблонов</span><span class="marquee-diamond">◆</span>
+    <span class="marquee-item">Базовый · Премиум · Люкс</span><span class="marquee-diamond">◆</span>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="hdr" id="hdr">
+  <div class="hdr-eye">TC Digital · Ташкент · Свадебные сайты</div>
+  <h1>Свадебные <em>сайты-приглашения</em></h1>
+  <div class="hdr-div"></div>
+  <div class="hdr-sub">10 шаблонов · 3 категории · от 30$</div>
+</div>
+
+<!-- ROTATING STRIP -->
+<div class="rotating-strip" id="rotStrip">
+  <div class="rotating-line top">
+    <span class="rot-word">Свадьба</span><span class="rot-sep">◆</span><span class="rot-word accent">Wedding</span><span class="rot-sep">◆</span><span class="rot-word">Любовь</span><span class="rot-sep">◆</span><span class="rot-word accent">Nikoh</span><span class="rot-sep">◆</span><span class="rot-word">Счастье</span><span class="rot-sep">◆</span><span class="rot-word accent">Ташкент</span><span class="rot-sep">◆</span><span class="rot-word">Навсегда</span><span class="rot-sep">◆</span><span class="rot-word accent">TC Digital</span><span class="rot-sep">◆</span>
+    <span class="rot-word">Свадьба</span><span class="rot-sep">◆</span><span class="rot-word accent">Wedding</span><span class="rot-sep">◆</span><span class="rot-word">Любовь</span><span class="rot-sep">◆</span><span class="rot-word accent">Nikoh</span><span class="rot-sep">◆</span><span class="rot-word">Счастье</span><span class="rot-sep">◆</span><span class="rot-word accent">Ташкент</span><span class="rot-sep">◆</span><span class="rot-word">Навсегда</span><span class="rot-sep">◆</span><span class="rot-word accent">TC Digital</span><span class="rot-sep">◆</span>
+  </div>
+  <div class="rotating-line bottom">
+    <span class="rot-word accent">Forever</span><span class="rot-sep">◆</span><span class="rot-word">Семья</span><span class="rot-sep">◆</span><span class="rot-word accent">Amor</span><span class="rot-sep">◆</span><span class="rot-word">Праздник</span><span class="rot-sep">◆</span><span class="rot-word accent">Базовый</span><span class="rot-sep">◆</span><span class="rot-word">Премиум</span><span class="rot-sep">◆</span><span class="rot-word accent">Люкс</span><span class="rot-sep">◆</span><span class="rot-word">Moments</span><span class="rot-sep">◆</span>
+    <span class="rot-word accent">Forever</span><span class="rot-sep">◆</span><span class="rot-word">Семья</span><span class="rot-sep">◆</span><span class="rot-word accent">Amor</span><span class="rot-sep">◆</span><span class="rot-word">Праздник</span><span class="rot-sep">◆</span><span class="rot-word accent">Базовый</span><span class="rot-sep">◆</span><span class="rot-word">Премиум</span><span class="rot-sep">◆</span><span class="rot-word accent">Люкс</span><span class="rot-sep">◆</span><span class="rot-word">Moments</span><span class="rot-sep">◆</span>
+  </div>
+</div>
+
+<!-- SECTION PILLS -->
+<div class="sec-nav" id="secNav">
+  <div class="sec-pill active" onclick="switchSec(0)">
+    <div class="sec-pill-num">01</div>
+    <div class="sec-pill-name">Базовый</div>
+    <div class="sec-pill-price">1 страница · от 30$</div>
+  </div>
+  <div class="sec-pill" onclick="switchSec(1)">
+    <div class="sec-pill-num">02</div>
+    <div class="sec-pill-name">Премиум</div>
+    <div class="sec-pill-price">Несколько страниц · от 50$</div>
+  </div>
+  <div class="sec-pill" onclick="switchSec(2)">
+    <div class="sec-pill-num">03</div>
+    <div class="sec-pill-name">Люкс</div>
+    <div class="sec-pill-price">Скоро</div>
+  </div>
+</div>
+
+<!-- ══════ БАЗОВЫЙ (7 шаблонов) ══════ -->
+<div class="section active" id="sec0">
+  <div class="sec-head" id="sh0">
+    <div class="sec-tag">Категория 01</div>
+    <div class="sec-title">Базовый · <em>одна страница</em></div>
+    <div class="sec-line"></div>
+    <div class="sec-sub">Вся информация о свадьбе на одном экране</div>
+  </div>
+  <div class="grid">
+
+    <!-- 1. Weddingcard-premium9 -->
+    <a class="card" href="https://merlan04.github.io/Weddingcard-premium9/" target="_blank" rel="noopener">
+      <div class="prev pv9">
+        <div class="pv9-bg">В&Д</div>
+        <div class="pv9-vl t"></div><div class="pv9-vl b"></div>
+        <div class="pv9-i">
+          <div class="pv9-eye">Save the date</div>
+          <span class="pv9-dmd"></span>
+          <div class="pv9-nm">Влад <span class="pv9-am">&</span> Диана</div>
+          <span class="pv9-dmd"></span>
+          <div class="pv9-dt">Сентябрь 2027</div>
+        </div>
+        <div class="cbadge b-alt">Элит</div>
+      </div>
+      <div class="cbody">
+        <div class="ctop"><div><div class="ctitle">Люкс тёмный</div><div class="csub">Чёрный · Элегантный</div></div><div class="cprice">от 30$<span>/сайт</span></div></div>
+        <div class="chips"><div class="chip on">История</div><div class="chip on">Расписание</div><div class="chip on">Галерея</div><div class="chip on">RSVP</div><div class="chip on">QR</div><div class="chip on">Карта</div></div>
+        <div class="sep"></div>
+        <div class="cta-row"><div class="cta-btn">Открыть демо →</div><div class="cpages">1 длинная стр.</div></div>
+      </div>
+    </a>
+
+    <!-- 2. Weddingcard-premium8 -->
+    <a class="card" href="https://merlan04.github.io/Weddingcard-premium8/" target="_blank" rel="noopener">
+      <div class="prev pv8">
+        <div class="pv8-i">
+          <div class="pv8-top">Wedding invitation</div>
+          <span class="pv8-dmd"></span>
+          <div class="pv8-nm">Влад <span class="pv8-am">&</span> Диана</div>
+          <div class="pv8-line"></div>
+          <div class="pv8-sub">Сентябрь · 2027 · Ташкент</div>
+        </div>
+        <div class="cbadge b-std">Стандарт</div>
+      </div>
+      <div class="cbody">
+        <div class="ctop"><div><div class="ctitle">Тёмный с программой</div><div class="csub">2-дневное расписание</div></div><div class="cprice">от 30$<span>/сайт</span></div></div>
+        <div class="chips"><div class="chip on">2-дневная программа</div><div class="chip on">Instagram</div><div class="chip on">Карта</div><div class="chip on">RSVP</div></div>
+        <div class="sep"></div>
+        <div class="cta-row"><div class="cta-btn">Открыть демо →</div><div class="cpages">1 страница</div></div>
+      </div>
+    </a>
+
+    <!-- 3. Weddingcard-premium -->
+    <a class="card" href="https://merlan04.github.io/Weddingcard-premium/" target="_blank" rel="noopener">
+      <div class="prev pvp">
+        <div class="pvp-c1"></div><div class="pvp-c2"></div>
+        <div class="pvp-i">
+          <div class="pvp-bar"></div>
+          <div class="pvp-tag">Wedding invitation</div>
+          <div class="pvp-nm">Владислав <span class="pvp-am">&</span> Диана</div>
+          <div class="pvp-dt">Июль 2027 · Ташкент</div>
+        </div>
+        <div class="cbadge b-std">Стандарт</div>
+      </div>
+      <div class="cbody">
+        <div class="ctop"><div><div class="ctitle">Тёмный с кругами</div><div class="csub">Золото на тёмном</div></div><div class="cprice">от 30$<span>/сайт</span></div></div>
+        <div class="chips"><div class="chip on">Таймер</div><div class="chip on">История</div><div class="chip on">Галерея</div><div class="chip on">RSVP</div><div class="chip on">Расписание</div></div>
+        <div class="sep"></div>
+        <div class="cta-row"><div class="cta-btn">Открыть демо →</div><div class="cpages">1 страница</div></div>
+      </div>
+    </a>
+
+    <!-- 4. Weddingcard-premium7 -->
+    <a class="card" href="https://merlan04.github.io/Weddingcard-premium7/" target="_blank" rel="noopener">
+      <div class="prev pv7">
+        <div class="pv7-i">
+          <div class="pv7-tag">Приглашение на свадьбу</div>
+          <div class="pv7-nm">Влад <span class="pv7-am">&</span> Диана</div>
+          <div class="pv7-ln"></div>
+          <div class="pv7-dt">Сентябрь · 2027 · Ташкент</div>
+          <div class="pv7-prog"><span class="pv7-step">Никах</span><span class="pv7-step">Вечер</span><span class="pv7-step">Свадьба</span></div>
+        </div>
+        <div class="cbadge b-std">Стандарт</div>
+      </div>
+      <div class="cbody">
+        <div class="ctop"><div><div class="ctitle">Светлый с программой</div><div class="csub">2-дневное торжество</div></div><div class="cprice">от 30$<span>/сайт</span></div></div>
+        <div class="chips"><div class="chip on">2-дневная программа</div><div class="chip on">Instagram</div><div class="chip on">Карта</div><div class="chip on">RSVP</div></div>
+        <div class="sep"></div>
+        <div class="cta-row"><div class="cta-btn">Открыть демо →</div><div class="cpages">1 страница</div></div>
+      </div>
+    </a>
+
+    <!-- 5. Weddingcard-premium2 -->
+    <a class="card" href="https://merlan04.github.io/Weddingcard-premium2/" target="_blank" rel="noopener">
+      <div class="prev pv2">
+        <div class="pv2-bg">Love</div>
+        <div class="pv2-vl t"></div><div class="pv2-vl b"></div>
+        <div class="pv2-i">
+          <div class="pv2-eye">Save the date</div>
+          <span class="pv2-dmd"></span>
+          <div class="pv2-nm">Влад <span class="pv2-am">&</span> Диана</div>
+          <span class="pv2-dmd"></span>
+          <div class="pv2-dt">Сентябрь 2027</div>
+        </div>
+        <div class="cbadge b-alt">Элит</div>
+      </div>
+      <div class="cbody">
+        <div class="ctop"><div><div class="ctitle">Тёмный элит</div><div class="csub">Чёрный · Полный</div></div><div class="cprice">от 30$<span>/сайт</span></div></div>
+        <div class="chips"><div class="chip on">История</div><div class="chip on">Галерея</div><div class="chip on">RSVP</div><div class="chip on">Подарки QR</div><div class="chip on">Карта</div></div>
+        <div class="sep"></div>
+        <div class="cta-row"><div class="cta-btn">Открыть демо →</div><div class="cpages">1 длинная стр.</div></div>
+      </div>
+    </a>
+
+    <!-- 6. Wedding-card -->
+    <a class="card" href="https://merlan04.github.io/Wedding-card/" target="_blank" rel="noopener">
+      <div class="prev pv1">
+        <div class="pv1b">
+          <div class="pv1-sm">приглашение</div>
+          <div class="pv1-ln"></div>
+          <div class="pv1-nm">Влад <span class="pv1-am">&</span> Диана</div>
+          <div class="pv1-ln"></div>
+          <div class="pv1-dt">09 · 09 · 2027 · Ташкент</div>
+        </div>
+        <div class="cbadge b-std">Классик</div>
+      </div>
+      <div class="cbody">
+        <div class="ctop"><div><div class="ctitle">Классический светлый</div><div class="csub">Кремовый · Элегантный</div></div><div class="cprice">от 30$<span>/сайт</span></div></div>
+        <div class="chips"><div class="chip on">Таймер</div><div class="chip on">Галерея</div><div class="chip on">Карта + QR</div><div class="chip on">Поздравления</div></div>
+        <div class="sep"></div>
+        <div class="cta-row"><div class="cta-btn">Открыть демо →</div><div class="cpages">1 страница</div></div>
+      </div>
+    </a>
+
+    <!-- 7. Weddingcard-premium3 -->
+    <a class="card" href="https://merlan04.github.io/Weddingcard-premium3/" target="_blank" rel="noopener">
+      <div class="prev pv3">
+        <div class="pv3l"><div class="pv3l-yr">2027</div><div class="pv3l-mo">Сент.</div></div>
+        <div class="pv3r">
+          <div class="pv3-sm">приглашение</div>
+          <div class="pv3-ln"></div>
+          <div class="pv3-nm">Влад <span class="pv3-am">&</span> Диана</div>
+          <div class="pv3dot"></div>
+          <div class="pv3-pl">Ташкент, Узбекистан</div>
+        </div>
+        <div class="cbadge b-ros">Ультра</div>
+      </div>
+      <div class="cbody">
+        <div class="ctop"><div><div class="ctitle">Ультра светлый</div><div class="csub">Полный комплект</div></div><div class="cprice">от 30$<span>/сайт</span></div></div>
+        <div class="chips"><div class="chip on">2-дневная программа</div><div class="chip on">Дресс-код</div><div class="chip on">Instagram</div><div class="chip on">Фото помолвки</div><div class="chip on">Карта</div><div class="chip on">RSVP</div></div>
+        <div class="sep"></div>
+        <div class="cta-row"><div class="cta-btn">Открыть демо →</div><div class="cpages">макс. функции</div></div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<!-- ══════ ПРЕМИУМ (3 шаблона) ══════ -->
+<div class="section" id="sec1">
+  <div class="sec-head" id="sh1">
+    <div class="sec-tag">Категория 02</div>
+    <div class="sec-title">Премиум · <em>несколько страниц</em></div>
+    <div class="sec-line"></div>
+    <div class="sec-sub">История, галерея, расписание, RSVP и многое другое</div>
+  </div>
+  <div class="grid">
+
+    <!-- 1. Weddingcard-premium10 -->
+    <a class="card" href="https://merlan04.github.io/Weddingcard-premium10/" target="_blank" rel="noopener">
+      <div class="prev pv10">
+        <div class="pv10-i">
+          <div class="pv10-ar">☽</div>
+          <div class="pv10-tag">Nikoh · Никах</div>
+          <div class="pv10-geo"></div>
+          <div class="pv10-nm">Влад <span class="pv10-am">&</span> Диана</div>
+          <div class="pv10-dt">Сентябрь 2027</div>
+        </div>
+        <div class="cbadge b-std">Никах</div>
+      </div>
+      <div class="cbody">
+        <div class="ctop"><div><div class="ctitle">Восточный стиль</div><div class="csub">Никах · Традиции</div></div><div class="cprice">от 50$<span>/сайт</span></div></div>
+        <div class="chips"><div class="chip on">Программа</div><div class="chip on">История</div><div class="chip on">Галерея</div><div class="chip on">RSVP</div><div class="chip on">Карта</div></div>
+        <div class="sep"></div>
+        <div class="cta-row"><div class="cta-btn">Открыть демо →</div><div class="cpages">несколько стр.</div></div>
+      </div>
+    </a>
+
+    <!-- 2. Weddingcard-premium6 -->
+    <a class="card" href="https://merlan04.github.io/Weddingcard-premium6/" target="_blank" rel="noopener">
+      <div class="prev pv6">
+        <div class="pv6-i">
+          <span class="pv6-dmd"></span>
+          <div class="pv6-top">Wedding · Свадьба</div>
+          <div class="pv6-nm">Александр <span class="pv6-am">&</span> Алина</div>
+          <div class="pv6-ln"></div>
+          <div class="pv6-dt">27 · 09 · 2027 · Ташкент</div>
+        </div>
+        <div class="cbadge b-prem">Премиум</div>
+      </div>
+      <div class="cbody">
+        <div class="ctop"><div><div class="ctitle">Роскошный тёмный</div><div class="csub">Золото · Люкс</div></div><div class="cprice">от 50$<span>/сайт</span></div></div>
+        <div class="chips"><div class="chip on">История</div><div class="chip on">Расписание</div><div class="chip on">Галерея</div><div class="chip on">RSVP</div><div class="chip on">Подарки QR</div><div class="chip on">Карта</div></div>
+        <div class="sep"></div>
+        <div class="cta-row"><div class="cta-btn">Открыть демо →</div><div class="cpages">несколько стр.</div></div>
+      </div>
+    </a>
+
+    <!-- 3. Weddingcard-premium5 -->
+    <a class="card" href="https://merlan04.github.io/Weddingcard-premium5/" target="_blank" rel="noopener">
+      <div class="prev pv5">
+        <div class="pv5-bg">Forever</div>
+        <div class="pv5-i">
+          <div class="pv5-tag">Premium · Wedding</div>
+          <div class="pv5-nm">Влад <span class="pv5-am">&</span> Диана</div>
+          <div class="pv5-sep"></div>
+          <div class="pv5-dt">2027 · Ташкент</div>
+          <div class="pv5-pages"><div class="pv5-pg on"></div><div class="pv5-pg"></div><div class="pv5-pg"></div><div class="pv5-pg"></div></div>
+        </div>
+        <div class="cbadge b-prem">Премиум</div>
+      </div>
+      <div class="cbody">
+        <div class="ctop"><div><div class="ctitle">Премиум сиреневый</div><div class="csub">Романтичный · Многостраничный</div></div><div class="cprice">от 50$<span>/сайт</span></div></div>
+        <div class="chips"><div class="chip on">История</div><div class="chip on">Галерея</div><div class="chip on">RSVP</div><div class="chip on">Контакты</div></div>
+        <div class="sep"></div>
+        <div class="cta-row"><div class="cta-btn">Открыть демо →</div><div class="cpages">4 страницы</div></div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<!-- ══════ ЛЮКС ══════ -->
+<div class="section" id="sec2">
+  <div class="sec-head" id="sh2">
+    <div class="sec-tag">Категория 03</div>
+    <div class="sec-title">Люкс · <em>личный кабинет</em></div>
+    <div class="sec-line"></div>
+    <div class="sec-sub">Умные свадебные сайты с панелью управления</div>
+  </div>
+  <div class="luxe-wrap" id="luxeWrap">
+    <div class="luxe-dots"><div class="luxe-dot"></div><div class="luxe-dot"></div><div class="luxe-dot"></div></div>
+    <div class="luxe-tag">Скоро · В разработке</div>
+    <div class="luxe-title">Сайты нового<br><em>поколения</em></div>
+    <div class="luxe-line"></div>
+    <div class="luxe-desc">Первый в Узбекистане свадебный сайт с личным кабинетом для пары.<br>Видите в реальном времени кто подтвердил, сколько гостей придёт,<br>кто написал поздравление — всё в одной красивой панели.</div>
+    <div class="luxe-features">
+      <div class="luxe-feat"><div class="luxe-feat-icon">👤</div><div class="luxe-feat-name">Личный кабинет</div><div class="luxe-feat-sub">Логин и пароль для пары</div></div>
+      <div class="luxe-feat"><div class="luxe-feat-icon">📊</div><div class="luxe-feat-name">Счётчик RSVP</div><div class="luxe-feat-sub">В реальном времени</div></div>
+      <div class="luxe-feat"><div class="luxe-feat-icon">👥</div><div class="luxe-feat-name">Список гостей</div><div class="luxe-feat-sub">Кто подтвердил, кто нет</div></div>
+      <div class="luxe-feat"><div class="luxe-feat-icon">💌</div><div class="luxe-feat-name">Поздравления</div><div class="luxe-feat-sub">Все сообщения гостей</div></div>
+      <div class="luxe-feat"><div class="luxe-feat-icon">📱</div><div class="luxe-feat-name">QR для гостей</div><div class="luxe-feat-sub">Уникальный код каждому</div></div>
+      <div class="luxe-feat"><div class="luxe-feat-icon">📈</div><div class="luxe-feat-name">Статистика</div><div class="luxe-feat-sub">Графики и аналитика</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TELEGRAM -->
+<div class="tg-section" id="tgSection">
+  <div class="tg-card">
+    <div>
+      <div class="tg-eyebrow">Связаться с нами</div>
+      <div class="tg-title">Заказать сайт в <em>Telegram</em></div>
+      <div class="tg-hint">Ответим в течение нескольких минут</div>
+    </div>
+    <div>
+      <a class="tg-btn" href="https://t.me/VVebstyle" target="_blank" rel="noopener">
+        <svg class="tg-icon" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.93 6.836l-1.68 7.917c-.126.56-.456.695-.923.433l-2.558-1.884-1.234 1.19c-.136.136-.25.25-.513.25l.183-2.594 4.724-4.267c.206-.183-.044-.284-.32-.1L7.55 14.048l-2.52-.785c-.547-.17-.558-.547.114-.81l9.856-3.8c.456-.163.855.112.93.183z" fill="#1a1620"/></svg>
+        @VVebstyle
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <div class="foot-brand">TC <em>Digital</em></div>
+  <div class="foot-links">
+    <a class="foot-link" href="https://t.me/VVebstyle" target="_blank" rel="noopener">Telegram</a>
+    <a class="foot-link" href="https://t.me/WebFlow_TC" target="_blank" rel="noopener">WebFlow TC</a>
+    <a class="foot-link" href="https://instagram.com/mannapov_ulugbek" target="_blank" rel="noopener">Instagram</a>
+  </div>
+  <div class="foot-copy">© 2025 TC Digital · Ташкент · Свадебные сайты-приглашения</div>
+</footer>
+
+<script>
+const petalColors=['#c9a96e','#e8c88a','#d4aa7a','#f0dbb0','#b8905a'];
+const petalCont=document.getElementById('petals');
+function makePetal(){
+  const p=document.createElement('div');p.className='petal';
+  const s=8+Math.random()*10;
+  p.style.cssText=`width:${s}px;height:${s*1.5}px;left:${Math.random()*100}%;top:-20px;background:${petalColors[Math.floor(Math.random()*petalColors.length)]};border-radius:${Math.random()>.5?'50% 0 50% 0':'0 50% 0 50%'};animation-duration:${3+Math.random()*5}s;animation-delay:${Math.random()*2}s;`;
+  petalCont.appendChild(p);setTimeout(()=>p.remove(),8000);
+}
+let petalInt=setInterval(makePetal,180);
+
+const wids=['lw0','lw1','lw2','lw3'];let wi=0;
+const wordInt=setInterval(()=>{
+  document.getElementById(wids[wi]).classList.remove('active');
+  document.getElementById(wids[wi]).classList.add('exit');
+  setTimeout(()=>document.getElementById(wids[wi]).classList.remove('exit'),450);
+  wi=(wi+1)%wids.length;
+  document.getElementById(wids[wi]).classList.add('active');
+},950);
+
+let prog=0;
+const bar=document.getElementById('loaderBar'),pct=document.getElementById('loaderPct'),loaderEl=document.getElementById('loader');
+const loaderInt=setInterval(()=>{
+  prog+=Math.random()*6+1.5;
+  if(prog>=100){prog=100;clearInterval(loaderInt);clearInterval(wordInt);setTimeout(showPage,350);}
+  bar.style.width=Math.floor(prog)+'%';pct.textContent=Math.floor(prog);
+},60);
+
+function showPage(){
+  clearInterval(petalInt);loaderEl.classList.add('out');
+  setTimeout(()=>{
+    loaderEl.style.display='none';
+    document.getElementById('marquee').classList.add('show');
+    setTimeout(()=>document.getElementById('hdr').classList.add('show'),100);
+    setTimeout(()=>document.getElementById('rotStrip').classList.add('show'),300);
+    setTimeout(()=>document.getElementById('secNav').classList.add('show'),500);
+    setTimeout(()=>revealSection(0),680);
+    setTimeout(()=>document.getElementById('tgSection').classList.add('show'),1100);
+    setTimeout(()=>document.getElementById('footer').classList.add('show'),1300);
+  },800);
+}
+
+function revealSection(idx){
+  const sh=document.getElementById('sh'+idx);
+  if(sh){sh.classList.remove('show');void sh.offsetWidth;setTimeout(()=>sh.classList.add('show'),60);}
+  document.querySelectorAll('#sec'+idx+' .card').forEach((c,i)=>{
+    c.classList.remove('vis');void c.offsetWidth;setTimeout(()=>c.classList.add('vis'),100+i*90);
+  });
+  if(idx===2){const lx=document.getElementById('luxeWrap');if(lx){lx.classList.remove('show');void lx.offsetWidth;setTimeout(()=>lx.classList.add('show'),200);}}
+}
+
+function switchSec(idx){
+  document.querySelectorAll('.sec-pill').forEach((p,i)=>p.classList.toggle('active',i===idx));
+  document.querySelectorAll('.section').forEach((s,i)=>s.classList.toggle('active',i===idx));
+  revealSection(idx);
+  window.scrollTo({top:document.getElementById('secNav').offsetTop-80,behavior:'smooth'});
+}
+
+if(!window.matchMedia('(hover:none)').matches){
+  document.querySelectorAll('.card').forEach(card=>{
+    card.addEventListener('mousemove',e=>{
+      const r=card.getBoundingClientRect();
+      const x=((e.clientX-r.left)/r.width-.5)*10,y=((e.clientY-r.top)/r.height-.5)*10;
+      card.style.transform=`translateY(-8px) rotateX(${-y}deg) rotateY(${x}deg)`;
+    });
+    card.addEventListener('mouseleave',()=>{card.style.transform='';});
+  });
+}
+
+new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('show');});},{threshold:.1}).observe(document.getElementById('tgSection'));
+new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('show');});},{threshold:.05}).observe(document.getElementById('footer'));
+</script>
+</body>
+</html>
